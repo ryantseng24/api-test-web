@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+loguru
+python-multipart
+pydantic>=2.0.0 
