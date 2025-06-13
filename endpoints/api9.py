@@ -1,39 +1,60 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import RedirectResponse
+from datetime import datetime
 
 router = APIRouter(prefix="/api9", tags=["API9: Improper Assets Management"])
 
-# 模擬舊版 API
+# 舊版 API 重定向到新版
 @router.get("/old-api")
 def old_api():
+    return RedirectResponse(url="/api9/new-api", status_code=301)
+
+# 新版 API
+@router.get("/new-api")
+def new_api():
     return {
-        "msg": "這是舊版 API，應該已經棄用",
-        "version": "1.0.0",
-        "deprecated": True
+        "msg": "這是新版 API",
+        "version": "2.0.0",
+        "last_updated": "2025-06-13"
     }
 
-# 模擬舊版路徑
+# v1 路徑重定向到新路徑
 @router.get("/v1/users")
 def v1_users():
+    return RedirectResponse(url="/api9/users", status_code=301)
+
+# 新路徑
+@router.get("/users")
+def users():
     return {
-        "msg": "這是舊版路徑，應該使用 /api9/users",
-        "version": "1.0.0",
-        "deprecated": True
+        "users": [
+            {"id": 1, "name": "user1"},
+            {"id": 2, "name": "user2"}
+        ]
     }
 
-# 模擬已棄用 API
+# 已棄用的 API 重定向到新端點
 @router.get("/deprecated")
 def deprecated():
+    return RedirectResponse(
+        url="/api9/new-endpoint",
+        status_code=301,
+        headers={"X-Deprecated": "true", "X-New-Endpoint": "/api9/new-endpoint"}
+    )
+
+# 新端點
+@router.get("/new-endpoint")
+def new_endpoint():
     return {
-        "msg": "這個 API 已經棄用，請使用新版本",
-        "new_endpoint": "/api9/new",
-        "deprecated_since": "2024-01-01"
+        "msg": "這是新的端點",
+        "replaced": "/api9/deprecated",
+        "since": "2025-06-13"
     }
 
-# 模擬未使用 API
+# 未使用的 API（保持不變）
 @router.get("/unused")
 def unused():
     return {
         "msg": "這個 API 已經不再使用",
-        "last_used": "2023-12-31",
-        "replacement": None
+        "last_used": "2025-01-01"
     } 
