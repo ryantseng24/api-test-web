@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from loguru import logger
 from fastapi.middleware.cors import CORSMiddleware
-from endpoints import api1, api2, api3, api4, api5, api6, api7, api8, api9, api10, log4j
+from endpoints import api1, api2, api3, api4, api5, api6, api7, api8, api9, api10, log4j, cve
 import sys
 import time
 from pathlib import Path
@@ -31,8 +31,8 @@ logger.add(
 )
 
 app = FastAPI(title="API Security Test Platform",
-              description="針對 OWASP API Top 10 及 Log4j 弱點的 API 測試站台",
-              version="1.0.0")
+              description="針對 OWASP API Top 10、Log4j 及真實 CVE 弱點的 API 測試站台",
+              version="2.0.0")
 
 # 設定 CORS
 app.add_middleware(
@@ -69,6 +69,7 @@ app.include_router(api8.router)
 app.include_router(api9.router)
 app.include_router(api10.router)
 app.include_router(log4j.router)
+app.include_router(cve.router)
 
 @app.get("/")
 def root():
